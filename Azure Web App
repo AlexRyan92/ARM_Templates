@@ -1,0 +1,37 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string"
+    },
+    "customDomain": {
+      "type": "string"
+    },
+    "sqlServerName": {
+      "type": "string"
+    }
+    // Add more parameters as needed
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2023-12-01",
+      "name": "[parameters('webAppName')]",
+      "location": "East US",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'YourAppServicePlanName')]",
+        "siteConfig": {
+          // Web app configuration settings
+        }
+      }
+    }
+    // Add more resources like Azure SQL Database connection
+  ],
+  "outputs": {
+    "webAppUrl": {
+      "type": "string",
+      "value": "[concat('https://', parameters('customDomain'))]"
+    }
+  }
+}
