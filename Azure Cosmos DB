@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "cosmosDBName": {
+      "type": "string"
+    },
+    "databaseName": {
+      "type": "string"
+    },
+    "containerName": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2022-04-01",
+      "name": "[parameters('cosmosDBName')]",
+      "location": "East US",
+      "kind": "GlobalDocumentDB",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "locationName": "East US",
+            "failoverPriority": 0
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+      "apiVersion": "2022-04-01",
+      "name": "[concat(parameters('cosmosDBName'), '/mydatabase')]",
+      "properties": {
+        "resource": {
+          "id": "mydatabase"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2022-04-01",
+      "name": "[concat(parameters('cosmosDBName'), '/mydatabase/', parameters('containerName'))]",
+      "properties": {
+        "resource": {
+          "id": "[parameters('containerName')]",
+          "partitionKey": {
+            "paths": [
+              "/partitionKey"
+            ],
+            "kind": "Hash"
+          }
+        }
+      }
+    }
+  ]
+}
