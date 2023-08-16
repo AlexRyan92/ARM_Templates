@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "aksClusterName": {
+      "type": "string"
+    },
+    "nodeCount": {
+      "type": "int",
+      "defaultValue": 3
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2023-11-01",
+      "name": "[parameters('aksClusterName')]",
+      "location": "East US",
+      "properties": {
+        "kubernetesVersion": "1.21.0",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "count": "[parameters('nodeCount')]",
+            "vmSize": "Standard_DS2_v2"
+          }
+        ]
+      }
+    }
+  ]
+}
