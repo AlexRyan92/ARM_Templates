@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "secretName": {
+      "type": "string"
+    },
+    "secretValue": {
+      "type": "securestring"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2022-04-01-preview",
+      "name": "[parameters('keyVaultName')]",
+      "location": "East US",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "YourObjectID",
+            "permissions": {
+              "secrets": ["get", "list", "set"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-04-01-preview",
+      "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
+      "properties": {
+        "value": "[parameters('secretValue')]"
+      }
+    }
+  ]
+}
